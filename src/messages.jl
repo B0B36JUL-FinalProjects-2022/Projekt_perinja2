@@ -1,5 +1,7 @@
 export SetNoise, Link, Measurement, Kill, Ok, Error, Message
-export  serialize, parse_message, string_to_struct
+export  serialize, parse_message, string_to_struct, convert
+
+import Base: convert
 
 using JSON3
 using InteractiveUtils
@@ -72,6 +74,9 @@ end
 serialize(Message::T) where T <: Message = """{"cmd":"$(string(T))","value":$(JSON3.write(Message))}"""
 
 
+# Base.push!(A::Channel{AbstractString}, b::Message) = push!(A, MyModule.serialize(b))
+convert(::Type{AbstractString}, m::T) where T<:Message = serialize(m)
+# push!(C::Type{Channel{String}}, m::T) where T<: Message = push!(C, serialize(m))
 # @assert SetNoise() === parse_message(serialize(SetNoise()))
 # @assert Link("src", 1, 1) === parse_message(serialize(Link("src", 1, 1)))
 # @assert Measurement(1,1) === parse_message(serialize(Measurement(1,1)))
