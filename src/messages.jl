@@ -75,7 +75,7 @@ serialize(Message::T) where T <: Message = """{"cmd":"$(string(T))","value":$(JS
 
 
 # Base.push!(A::Channel{AbstractString}, b::Message) = push!(A, MyModule.serialize(b))
-convert(::Type{AbstractString}, m::T) where T<:Message = serialize(m)
+convert(::Type{String}, m::T) where T<:Message = serialize(m)
 # push!(C::Type{Channel{String}}, m::T) where T<: Message = push!(C, serialize(m))
 # @assert SetNoise() === parse_message(serialize(SetNoise()))
 # @assert Link("src", 1, 1) === parse_message(serialize(Link("src", 1, 1)))
