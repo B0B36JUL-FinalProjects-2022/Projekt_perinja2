@@ -1,0 +1,28 @@
+nodes:
+  - model: AR
+    model_params: 
+      weights: [0.5, 1.0]
+      degree: 2
+    noise_mu: 0.0
+    noise_sigma: 0.1
+  - model: AR
+    model_params: 
+      weights: [10, 20]
+      degree: 2
+    noise_mu: 0.0
+    noise_sigma: 0.05
+  - model: AR
+    model_params: 
+      weights: [2, 4, 6]
+      degree: 2
+    noise_mu: 0.0
+    noise_sigma: 0.01
+
+edges:
+  - [1, 2]
+  - [2, 3]
+
+process:
+  - [0.1]
+  - [0.2]
+  - [0.3]
