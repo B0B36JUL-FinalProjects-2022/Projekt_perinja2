@@ -15,13 +15,6 @@ end
 
 observe!(model::Model, value::T) where {T<:Number} = _observe!(model, convert(Float64, value))
 
-function plt(df::DataFrame; kw...)
-    x = 1:nrow(df)
-    plot(x, df[!, "observed"], label="observed", kw...)
-    plot!(x, df[!, "predicted"], label="predicted", kw...)
-    plot!(x, df[!, "mixed"], label="mixed", kw...)
-end
-
 function mix!(model::M, timestep::Int64, _values::Dict{Int64, Float64}, mix_func::Function=x::Dict{Int64,Float64} -> mean(values(x))) where {M<:Model}
     model.df[!, "mixed"][timestep] = mix_func(_values)
 end

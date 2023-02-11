@@ -1,6 +1,5 @@
 using DataFrames
 
-include("model.jl")
 
 mutable struct AR <: Model
     deg::Int64

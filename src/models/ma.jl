@@ -1,7 +1,6 @@
 using DataFrames
 using Distributions
 
-include("model.jl")
 
 mutable struct MA <: Model
     deg::Int64

@@ -1,6 +1,3 @@
-include("ar.jl")
-include("ma.jl")
-
 
 mutable struct ARMA <: Model
     ar::AR

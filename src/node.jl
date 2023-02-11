@@ -2,10 +2,6 @@ using Pkg
 Pkg.activate(".")
 using Distributions
 
-include("models/ar.jl")
-include("models/ma.jl")
-include("models/arma.jl")
-
 import Base.show
 
 
@@ -33,8 +29,6 @@ mutable struct Node
 
 end
 
-
-
 function link_nodes!(left::Node, right::Node)
     left.nodes[right.id] = right
     right.nodes[left.id] = left
@@ -57,4 +51,15 @@ function Base.show(io::IO, ::MIME"text/plain", node::Node)
     println(io, "Node($(node.id))")
     println(io, "links: $([x.first for x in node.nodes])")
     println(io, node.model)
+end
+
+function plt(node::Node; kw...)
+    df = node.model.df
+    x = 1:nrow(df)
+    plot(x, df.observed, label="observed", kw...)
+    plot!(x, df.predicted, label="predicted", kw...)
+    plot!(x, df.mixed, label="mixed", kw...)
+    title!("Prediction results for node $(node.id)")
+    xlabel!("x")
+    ylabel!("y")
 end

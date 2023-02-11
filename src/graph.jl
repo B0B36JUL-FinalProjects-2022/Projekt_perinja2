@@ -1,7 +1,6 @@
 using YAML
 using Base.Filesystem
 
-include("node.jl")
 
 mutable struct Graph
     nodes::Dict{Int,Node}
