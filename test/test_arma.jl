@@ -1,10 +1,9 @@
 using Pkg
-Pkg.activate("../$(pwd())")
-
+using LinearAlgebra
+using PredNets
 using Test
 using Distributions
 
-include("../src/models/arma.jl")
 
 sampler = Normal(1, 5)
 

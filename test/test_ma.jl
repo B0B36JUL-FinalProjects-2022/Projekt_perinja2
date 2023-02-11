@@ -1,15 +1,13 @@
 using Pkg
-Pkg.activate("../$(pwd())")
 using LinearAlgebra
-
+using PredNets
 using Test
 using Distributions
 
-include("../src/models/ma.jl")
 
 sampler = Normal(1, 5)
 
-model = MA([1, 1], 0)
+model = PredNets.MA([1, 1], 0)
 sampled_values = Vector{Float64}()
 N = 50
 
