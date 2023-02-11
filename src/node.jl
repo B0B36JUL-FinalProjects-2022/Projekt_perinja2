@@ -1,7 +1,10 @@
+using Pkg
+Pkg.activate(".")
 using Distributions
 
 include("models/ar.jl")
 include("models/ma.jl")
+include("models/arma.jl")
 
 import Base.show
 
@@ -19,13 +22,18 @@ end
 mutable struct Node
     id::Int64
     noise_generator::Normal
-    model::AR
-    nodes::Dict{Int64,Node}
+    model::Model
+    nodes::Dict
+    function Node(node_id::Int64, model::String, model_params::Dict; μ::Float64=0.0, σ::Float64=1.0)
+        new(node_id, Normal(μ, σ), select_model(model)(; model_params...), Dict{Int64,Node}())
+    end
+    function Node(node_id::Int64, model::String; model_params::Dict)
+        Node(node_id, model, model_params)
+    end
+
 end
 
-function Node(node_id::Int64, model::String, model_params::Vector{Float64}; μ::Float64=0., σ::Float64=1.0) 
-    Node(node_id, Normal(μ, σ), select_model(model)(model_params), Dict{Int64,Node}())
-end
+
 
 function link_nodes!(left::Node, right::Node)
     left.nodes[right.id] = right
@@ -50,5 +58,3 @@ function Base.show(io::IO, ::MIME"text/plain", node::Node)
     println(io, "links: $([x.first for x in node.nodes])")
     println(io, node.model)
 end
-
-nodes = [Node(i, 2, [1.0, 1.0]) for i in range(1, 10)];

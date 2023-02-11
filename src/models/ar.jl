@@ -12,17 +12,27 @@ mutable struct AR <: Model
         deg = length(weights)
         new(deg,
             reverse(weights),
-            1,
+            0,
             DataFrame(observed=[],predicted=[],mixed=[]))
     end
 
-    AR(;weights::Vector{Float64}) = AR(weights)
 end
+
+AR(weights::Vector{T}) where T<:Number = AR(convert.(Float64, weights))
+
+function AR(;weights::Vector{Any})
+    typeof(weights[1]) <: Number && error("Weights values must be subtype of Number.")
+    AR(weights)
+end
+
+# AR(weights::Vector{N}) where {T<:Number, N<:Number} = MA(convert.(Float64, weights), convert(Float64, c); kw...) 
+AR(;weights) = AR(convert.(Float64, weights))
 
 function predict!(model::AR, timestep::Int64)
-    model.n >= timestep - model.deg + 1  || return NaN
-    @debug model.df.observed[timestep-model.deg+1:timestep]'
-    model.df[!, "predicted"][timestep] = model.df.observed[timestep-model.deg+1:timestep]' * model.weights
+    prediction = NaN
+    if model.deg <= timestep <= model.n
+        prediction = model.df.observed[timestep-model.deg+1:timestep]' * model.weights
+    end
+    model.df[!, "predicted"][timestep] = prediction
 end
-
 nothing

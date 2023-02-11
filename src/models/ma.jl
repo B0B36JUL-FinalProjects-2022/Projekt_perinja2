@@ -14,19 +14,19 @@ mutable struct MA <: Model
 
     function MA(weights::Vector{Float64}, c::Float64; μ::Float64=0., σ::Float64=1.)
         deg = length(weights)
-        @show deg, typeof(deg)
         new(deg,
             weights,
             convert(Float64, c),
             Normal(μ, σ),
             Vector{Float64}(),
-            1,
+            0,
             DataFrame(observed=[],predicted=[],mixed=[]))
     end
-    MA(;weights::Vector{Float64}, c::Float64, kw...) = MA(weights, c; kw...)
+    MA(weights::Vector{N}, c::T; kw...) where {T<:Number, N<:Number} = MA(convert.(Float64, weights), convert(Float64, c); kw...) 
+    MA(;weights::Vector{M}, c::T, kw...) where {T <: Number, M<:Number}= MA(weights, c; kw...)
+
 end
 
-MA(weights::Vector{Float64}, c::T; kw...) where T<:Number = MA(weights, convert(Float64, c); kw...) 
 
 function observe!(model::MA, value::Float64)
     push!(model.noises, rand(model.noise_gen))
@@ -36,12 +36,10 @@ end
 observe!(model::MA, value::T) where {T<:Number} = observe!(model, convert(Float64, value))
 
 function predict!(model::MA, timestep::Int64)
-    model.n >= timestep - model.deg + 1 || return NaN
-    @debug model.df.observed[timestep-model.deg+1:timestep]'
-    model.df[!, "predicted"][timestep] =  model.noises[timestep-model.deg+1:timestep]' * model.weights + model.noises[timestep]
+    prediction = NaN
+    if model.deg <= timestep <= model.n
+        prediction = model.noises[timestep-model.deg+1:timestep]' * model.weights + model.noises[timestep]
+    end
+    model.df[!, "predicted"][timestep] = prediction
 end
-
-
-model = MA([1.1, -0.9, 0.2], 0.1)
-
 nothing

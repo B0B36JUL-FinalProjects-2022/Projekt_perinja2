@@ -8,8 +8,8 @@ abstract type Model end;
 row_template = (observed=missing, predicted=missing, mixed=missing);
 
 function _observe!(model::M, value::Float64) where M<:Model
-    insert!(model.df, model.n, (row_template..., observed=value))
     model.n = model.n + 1
+    insert!(model.df, model.n, (row_template..., observed=value))
     nothing
 end
 
@@ -20,11 +20,10 @@ function plt(df::DataFrame; kw...)
     plot(x, df[!, "observed"], label="observed", kw...)
     plot!(x, df[!, "predicted"], label="predicted", kw...)
     plot!(x, df[!, "mixed"], label="mixed", kw...)
-
 end
 
-function mix!(model::M, timestep::Int64, values::Dict{Int64, Any}, mix_func::Function=x::Dict{Int64,Float64} -> mean(values(x))) where {M<:Model}
-    model.df[!, "mixed"][timestep] = mix_func(values)
+function mix!(model::M, timestep::Int64, _values::Dict{Int64, Float64}, mix_func::Function=x::Dict{Int64,Float64} -> mean(values(x))) where {M<:Model}
+    model.df[!, "mixed"][timestep] = mix_func(_values)
 end
 
 function get_prediction(model::M, timestep::Int64) where {M<:Model}
