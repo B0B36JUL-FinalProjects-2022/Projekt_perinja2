@@ -1,5 +1,4 @@
 using Pkg
-using LinearAlgebra
 using PredNets
 using Test
 using Distributions
