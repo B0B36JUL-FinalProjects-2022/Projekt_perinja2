@@ -3,10 +3,10 @@ using Base.Filesystem
 
 
 mutable struct Graph
-    nodes::Dict{Int,Node}
+    nodes::Dict{Int,Any}
     edges::Dict{Int,Vector{Int}}
     process::Vector{Float64}
-    Graph() = (Dict{Int,Node}(), Dict{Int,Vector{Int}}(), )
+    Graph() = (Dict{Int,Any}(), Dict{Int,Vector{Int}}(), )
 end
 
 function add_edge!(graph, u, v)

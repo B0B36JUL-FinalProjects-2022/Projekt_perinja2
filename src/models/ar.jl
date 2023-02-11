@@ -19,12 +19,6 @@ end
 
 AR(weights::Vector{T}) where T<:Number = AR(convert.(Float64, weights))
 
-function AR(;weights::Vector{Any})
-    typeof(weights[1]) <: Number && error("Weights values must be subtype of Number.")
-    AR(weights)
-end
-
-# AR(weights::Vector{N}) where {T<:Number, N<:Number} = MA(convert.(Float64, weights), convert(Float64, c); kw...) 
 AR(;weights) = AR(convert.(Float64, weights))
 
 function predict!(model::AR, timestep::Int64)
