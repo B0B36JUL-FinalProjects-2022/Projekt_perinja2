@@ -1,7 +1,6 @@
 using YAML
 using Base.Filesystem
 
-
 mutable struct Graph
     nodes::Dict{Int,Any}
     edges::Dict{Int,Vector{Int}}
@@ -18,7 +17,7 @@ function add_edge!(graph, u, v)
     nothing
 end
 
-function load_from_yaml(path::String)
+function deserialize(path::String)
     (stat(path) === nothing || !isfile(path)) && error("Wrong path to config file provided.")
 
     config = open(path) do f
@@ -26,7 +25,6 @@ function load_from_yaml(path::String)
     end
     graph = Graph()
     for node in config[:nodes]
-        # TODO = change it so the node accepts string identifier and model params, then noise
         curr_node = Node(
             length(graph.nodes) + 1,
             node[:model],
@@ -41,6 +39,34 @@ function load_from_yaml(path::String)
        add_edge!(graph, u, v)
        add_edge!(graph, v, u)
     end
+
+    typeof(config[:process])
+    graph.process = config[:process]
+
     return graph
 end
 
+function serialize(graph::Graph, file::String)
+    out = Dict{Symbol, Any}()
+
+    nodes = Vector{Dict{Symbol, Any}}()
+    for (_, node) in graph.nodes
+        push!(nodes, serialize(node))
+    end
+    out[:nodes] = nodes
+
+    edges = Set{Vector{Int64}}()
+    for (src, nodes) in graph.edges
+        for node in nodes
+            u = min(src, node)
+            v = max(src, node)
+            push!(edges, [u, v])
+        end
+    end
+    out[:edges] = [x; for x in edges]
+
+    out[:process] = graph.process
+
+    YAML.write_file(file, out);
+    nothing
+end

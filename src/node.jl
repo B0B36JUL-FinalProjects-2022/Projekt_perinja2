@@ -1,9 +1,6 @@
 using Pkg
-Pkg.activate(".")
 using Distributions
-
 import Base.show
-
 
 function select_model(x::String)
     if x == "AR"
@@ -62,4 +59,13 @@ function plt(node::Node; kw...)
     title!("Prediction results for node $(node.id)")
     xlabel!("x")
     ylabel!("y")
+end
+
+function serialize(node::Node)
+    Dict{Symbol,Any}(
+        :model =>String(nameof(typeof(node.model))),
+        :model_params => serialize(node.model),
+        :noise_mu => mean(node.noise_generator),
+        :noise_sigma => std(node.noise_generator)
+    )
 end

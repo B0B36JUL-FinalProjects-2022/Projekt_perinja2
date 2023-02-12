@@ -1,6 +1,5 @@
 using DataFrames
 
-
 mutable struct AR <: Model
     deg::Int64
     weights::Vector{Float64}
@@ -12,14 +11,13 @@ mutable struct AR <: Model
         new(deg,
             reverse(weights),
             0,
-            DataFrame(observed=[],predicted=[],mixed=[]))
+            DataFrame(observed=[], predicted=[], mixed=[]))
     end
-
 end
 
-AR(weights::Vector{T}) where T<:Number = AR(convert.(Float64, weights))
+AR(weights::Vector{T}) where {T<:Number} = AR(convert.(Float64, weights))
 
-AR(;weights) = AR(convert.(Float64, weights))
+AR(; weights) = AR(convert.(Float64, weights))
 
 function predict!(model::AR, timestep::Int64)
     prediction = NaN
@@ -29,3 +27,9 @@ function predict!(model::AR, timestep::Int64)
     model.df[!, "predicted"][timestep] = prediction
 end
 nothing
+
+function serialize(model::AR)
+    Dict{Symbol,Any}(
+        :weights => reverse(model.weights)
+    )
+end

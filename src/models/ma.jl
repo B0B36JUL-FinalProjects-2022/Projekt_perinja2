@@ -11,7 +11,7 @@ mutable struct MA <: Model
     n::Int64
     df::DataFrame
 
-    function MA(weights::Vector{Float64}, c::Float64; μ::Float64=0., σ::Float64=1.)
+    function MA(weights::Vector{Float64}, c::Float64; μ::Float64=0.0, σ::Float64=1.0)
         deg = length(weights)
         new(deg,
             weights,
@@ -19,10 +19,10 @@ mutable struct MA <: Model
             Normal(μ, σ),
             Vector{Float64}(),
             0,
-            DataFrame(observed=[],predicted=[],mixed=[]))
+            DataFrame(observed=[], predicted=[], mixed=[]))
     end
-    MA(weights::Vector{N}, c::T; kw...) where {T<:Number, N<:Number} = MA(convert.(Float64, weights), convert(Float64, c); kw...) 
-    MA(;weights::Vector{M}, c::T, kw...) where {T <: Number, M<:Number}= MA(weights, c; kw...)
+    MA(weights::Vector{N}, c::T; kw...) where {T<:Number,N<:Number} = MA(convert.(Float64, weights), convert(Float64, c); kw...)
+    MA(; weights::Vector{M}, c::T, kw...) where {T<:Number,M<:Number} = MA(weights, c; kw...)
 
 end
 
@@ -42,3 +42,9 @@ function predict!(model::MA, timestep::Int64)
     model.df[!, "predicted"][timestep] = prediction
 end
 nothing
+
+function serialize(model::MA)
+    Dict{Symbol,Any}(
+        :weights => model.weights,
+        :c => model.c)
+end
