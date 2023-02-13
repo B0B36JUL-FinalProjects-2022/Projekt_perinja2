@@ -11,7 +11,11 @@ mutable struct AR <: Model
         new(deg,
             reverse(weights),
             0,
-            DataFrame(observed=[], predicted=[], mixed=[]))
+            DataFrame(observed=Vector{Float64}(), 
+                      predicted=Vector{Float64}(), 
+                      mixed=Vector{Float64}()
+                      )
+            )
     end
 end
 

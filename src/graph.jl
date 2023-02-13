@@ -39,10 +39,7 @@ function deserialize(path::String)
        add_edge!(graph, u, v)
        add_edge!(graph, v, u)
     end
-
-    typeof(config[:process])
-    graph.process = config[:process]
-
+    graph.process =  :process in keys(config) ? config[:process] : nothing
     return graph
 end
 
@@ -50,7 +47,7 @@ function serialize(graph::Graph, file::String)
     out = Dict{Symbol, Any}()
 
     nodes = Vector{Dict{Symbol, Any}}()
-    for (_, node) in graph.nodes
+    for (_, node) in sort(collect(graph.nodes), by=x->x[1])   
         push!(nodes, serialize(node))
     end
     out[:nodes] = nodes
@@ -63,10 +60,30 @@ function serialize(graph::Graph, file::String)
             push!(edges, [u, v])
         end
     end
-    out[:edges] = [x; for x in edges]
+    out[:edges] = [x; for x in sort(collect(edges))]
+    if !isnothing(graph.process) 
+        out[:process] = graph.process
+    end
 
-    out[:process] = graph.process
-
-    YAML.write_file(file, out);
+    YAML.write_file(file,out);
     nothing
+end
+
+function simulate!(graph::Graph; process::Union{Nothing, Vector{Float64}}=nothing)
+
+    sim_proc = !isnothing(graph.process) ? graph.process : process
+    isnothing(sim_proc) && error("Graph has no process, nor was one provided.")
+
+    for (i, x) in enumerate(sim_proc)
+        @info "process at time $i"
+        for node in values(graph.nodes)
+            observe_and_predict!(node, i, x)
+        end
+        for node in values(graph.nodes)
+            # todo get neighbor predictions
+            mix!(node, i; mix_func=x->mean(values(x)))
+        end  
+    end
+
+    #TODO generate report
 end

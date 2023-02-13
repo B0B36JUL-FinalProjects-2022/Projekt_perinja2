@@ -2,7 +2,7 @@ module PredNets
 export AR, MA, ARMA, Node, Graph, Model
 export observe!, predict!, mix!, get_prediction
 export plt, add_edge!, link_nodes!, observe_and_predict!
-export serialize, deserialize
+export serialize, deserialize, simulate!
 include("models/model.jl")
 include("models/ar.jl")
 include("models/ma.jl")

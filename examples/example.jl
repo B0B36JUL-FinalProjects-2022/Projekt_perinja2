@@ -1,3 +1,6 @@
+using Pkg
+Pkg.activate("")
 using PredNets
 
-graph = PredNets.load_from_yaml("./examples/config.yaml")
+g = deserialize("./examples/config.yaml")
+simulate!(g)

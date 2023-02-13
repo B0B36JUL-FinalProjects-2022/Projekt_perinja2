@@ -1,26 +1,34 @@
-nodes:
-  - model: AR
-    model_params: 
-      weights: [0.5, 1.0]
-    noise_mu: 0.0
-    noise_sigma: 0.1
-  - model: AR
-    model_params: 
-      weights: [1, .20]
-    noise_mu: 0.0
-    noise_sigma: 0.05
-  - model: MA
-    model_params: 
-      weights: [1.2, .4]
-      c: 1
-    noise_mu: 0.0
-    noise_sigma: 0.01
-
-edges:
-  - [1, 2]
-  - [2, 3]
-
 process:
   - 0.1
   - 0.2
   - 0.3
+nodes:
+  - noise_sigma: 0.1
+    noise_mu: 0.0
+    model_params:
+      weights:
+        - 0.5
+        - 1.0
+    model: "AR"
+  - noise_sigma: 0.05
+    noise_mu: 0.0
+    model_params:
+      weights:
+        - 1.0
+        - 0.2
+    model: "AR"
+  - noise_sigma: 0.01
+    noise_mu: 0.0
+    model_params:
+      weights:
+        - 1.2
+        - 0.4
+      c: 1.0
+    model: "MA"
+edges:
+  -
+    - 1
+    - 2
+  -
+    - 2
+    - 3

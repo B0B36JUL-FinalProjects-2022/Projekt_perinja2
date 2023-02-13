@@ -33,15 +33,16 @@ function link_nodes!(left::Node, right::Node)
 end
 
 function observe_and_predict!(node::Node, timestep::Int64, value::Float64)
-    value += rand(node.noise_generator, 1)
+    value += rand(node.noise_generator)
     observe!(node.model, value)
     predict!(node.model, timestep)
 end
 
-function mix!(node::Node, timestep::Int64)
-    predictions = Dict{Int64,Float64}(k => v.get_prediction(timestep) for (k, v) in node.nodes)
-    predictions[node.id] = node.get_prediction(timestep)
-    mix!(node.model, timestep, predictions)
+function mix!(node::Node, timestep::Int64; mix_func::Function)
+    predictions = Dict{Int64,Float64}(k => get_prediction(v, timestep) for (k, v) in node.nodes)
+    value = get_prediction(node, timestep)
+    predictions[node.id] = value
+    mix!(node.model, timestep, predictions; mix_func=mix_func)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", node::Node)
@@ -69,3 +70,5 @@ function serialize(node::Node)
         :noise_sigma => std(node.noise_generator)
     )
 end
+
+get_prediction(node::Node, timestep::Int64) = get_prediction(node.model, timestep)
