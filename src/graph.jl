@@ -127,7 +127,7 @@ function serialize_edges!(graph::Graph, out::Dict{Symbol, Any})
             push!(edges, [u, v])
         end
     end
-    out[:edges] = [x; for x in sort(collect(edges))]
+    out[:edges] = [x for x in sort(collect(edges))]
     @debug "Serializing OK."
     nothing
 end
