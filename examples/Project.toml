@@ -1,3 +1,2 @@
 [deps]
 PredNets = "efc068b1-7e28-476b-816e-dfc57925642d"
-WebSockets = "104b5d7c-a370-577a-8038-80a2059c5097"

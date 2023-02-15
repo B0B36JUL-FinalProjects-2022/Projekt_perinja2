@@ -16,3 +16,5 @@ for node in nodes_1
 end
 
 @test Set(keys(nodes_2[1].nodes)) == Set(collect(x.id for x in nodes_1))
+println("test_node.jl: tests passed")
+nothing

@@ -1,3 +1,7 @@
+using Pkg
+
+Pkg.activate(".")
+
 using PredNets
 using Test
 
