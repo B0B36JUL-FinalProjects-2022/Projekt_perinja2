@@ -19,6 +19,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
 CSV = "0.10"
+Distributions = "0.25"
 Documenter = "0.27"
 julia = "1"
 
